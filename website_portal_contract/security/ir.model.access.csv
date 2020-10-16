@@ -1,8 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-account_analytic_contract_template_manager,account.analytic.contract.template.manager,model_account_analytic_contract_template,account.group_account_manager,1,1,1,1
-account_analytic_contract_template_user,account.analytic.contract.template.user,model_account_analytic_contract_template,account.group_account_user,1,0,0,0
-account_analytic_account_portal,account.analytic.account.portal,analytic.model_account_analytic_account,base.group_portal,1,1,0,0
-account_analytic_invoice_line_portal,account.analytic.invoice.line.portal,contract.model_account_analytic_invoice_line,base.group_portal,1,1,0,0
-account_analytic_contract_portal,account.analytic.contract.portal,contract.model_account_analytic_contract,base.group_portal,1,0,0,0
-account_analytic_contract_template_portal,account.analytic.contract.template.portal,model_account_analytic_contract_template,base.group_portal,1,0,0,0
-account_analytic_line_portal,account.analytic.line.portal,sale.model_account_analytic_line,base.group_portal,1,0,0,0
+contract_website_template_manager,Contract Website Template Manager,model_contract_website_template,account.group_account_manager,1,1,1,1
+contract_website_template_user,Contract Website Template User,model_contract_website_template,account.group_account_user,1,0,0,0
+contract_portal,Contract Portal,contract.model_contract_contract,base.group_portal,1,1,0,0
+account_invoice_line_portal,Account Invoice Line Portal,contract.model_account_invoice_line,base.group_portal,1,1,0,0
+contract_template_portal,Contract Template Portal,contract.model_contract_template,base.group_portal,1,0,0,0
+contract_website_template_portal,Contract Website Template Portal,model_contract_website_template,base.group_portal,1,0,0,0
+contract_template_line_portal,Contract Template Line Portal,contract.model_contract_template_line,base.group_portal,1,0,0,0

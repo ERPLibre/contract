@@ -4,9 +4,9 @@
 
 <odoo>
 
-    <record id="account_analytic_account_1" model="account.analytic.account">
+    <record id="contract_1" model="contract.contract">
         <field name="name">Demo Contract</field>
-        <field name="contract_template_id" ref="account_analytic_contract_1" />
+        <field name="contract_template_id" ref="contract_template_1" />
         <field name="pricelist_id" ref="product.list0" />
         <field name="date_start" eval="time.strftime('%Y-%m-10')" />
         <field name="recurring_next_date" eval="time.strftime('%Y-%m-20')" />

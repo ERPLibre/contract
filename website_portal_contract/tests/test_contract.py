@@ -4,14 +4,14 @@
 from odoo.tests.common import HttpCase
 
 
-class TestAccountAnalyticAccount(HttpCase):
+class TestContract(HttpCase):
     def setUp(self):
-        super(TestAccountAnalyticAccount, self).setUp()
+        super(TestContract, self).setUp()
         self.account = self.env.ref(
-            "website_portal_contract.account_analytic_account_1"
+            "website_portal_contract.contract_1"
         )
         self.contract = self.env.ref(
-            "website_portal_contract.account_analytic_contract_1"
+            "website_portal_contract.contract_template_1"
         )
 
     def test_website_template_id(self):
@@ -24,5 +24,5 @@ class TestAccountAnalyticAccount(HttpCase):
         """ Test returns correct contracts """
         self.account.partner_id = self.env.ref("base.partner_root")
         self.assertIn(
-            self.account, self.env["account.analytic.account"]._search_contracts()
+            self.account, self.env["contract.contract"]._search_contracts()
         )

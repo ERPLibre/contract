@@ -4,13 +4,12 @@
 from odoo import api, fields, models
 
 
-class AccountAnalyticContract(models.Model):
-
-    _inherit = "account.analytic.contract"
+class ContractTemplate(models.Model):
+    _inherit = "contract.template"
 
     website_template_id = fields.Many2one(
         string="Website Template",
-        comodel_name="account.analytic.contract.template",
+        comodel_name="contract.website.template",
         help="Website layout for contract",
         default=lambda s: s._get_default_template(),
     )

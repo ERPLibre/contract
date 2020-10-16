@@ -4,7 +4,7 @@
 
 <odoo>
 
-    <record id="account_analytic_contract_1" model="account.analytic.contract">
+    <record id="contract_template_1" model="contract.template">
         <field name="name">Demo Contract Template</field>
         <field name="recurring_invoicing_type">post-paid</field>
         <field name="recurring_interval">10</field>

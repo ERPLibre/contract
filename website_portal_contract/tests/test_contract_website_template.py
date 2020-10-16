@@ -4,9 +4,9 @@
 from odoo.tests.common import HttpCase
 
 
-class TestAccountAnalyticContractTemplate(HttpCase):
+class TestContractWebsiteTemplate(HttpCase):
     def setUp(self):
-        super(TestAccountAnalyticContractTemplate, self).setUp()
+        super(TestContractWebsiteTemplate, self).setUp()
         self.template = self.env.ref(
             "website_portal_contract.website_contract_template_default"
         )

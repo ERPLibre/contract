@@ -5,23 +5,24 @@ from odoo import api, fields, models
 from odoo.tools.translate import html_translate
 
 
-class AccountAnalyticContractTemplate(models.Model):
-
-    _name = "account.analytic.contract.template"
+class ContractWebsiteTemplate(models.Model):
+    _name = "contract.website.template"
     _description = "Contract Website Templates"
 
     name = fields.Char(help="Template name")
     website_description = fields.Html(
-        string="Description", translate=html_translate, sanitize_attributes=False
+        string="Description", 
+        translate=html_translate, 
+        sanitize_attributes=False,
     )
-    analytic_account_id = fields.One2many(
-        string="Analytic Account",
-        comodel_name="account.analytic.account",
+    contract_id = fields.Many2one(
+        string="Contract",
+        comodel_name='contract.contract',
         inverse_name="website_template_id",
     )
-    analytic_contract_id = fields.One2many(
+    contract_template_id = fields.One2many(
         string="Contract Template",
-        comodel_name="account.analytic.account",
+        comodel_name="contract.template",
         inverse_name="website_template_id",
     )
 
@@ -31,5 +32,5 @@ class AccountAnalyticContractTemplate(models.Model):
         return {
             "type": "ir.actions.act_url",
             "target": "self",
-            "url": "/contract/template/%d" % self.id,
+            "url": f"/contract/template/{self.id}",
         }

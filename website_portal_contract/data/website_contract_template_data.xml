@@ -4,7 +4,7 @@
 
 <odoo noupdate="1">
 
-    <record id="website_contract_template_default" model="account.analytic.contract.template">
+    <record id="website_contract_template_default" model="contract.website.template">
         <field name="name">Default Template</field>
         <field name="website_description" type="xml">
             <section data-snippet-id="text-block">

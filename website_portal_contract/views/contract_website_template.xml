@@ -4,9 +4,9 @@
 
 <odoo>
 
-    <record id="account_analytic_contract_template_view_form" model="ir.ui.view">
-        <field name="name">account.analytic.contract.template.form</field>
-        <field name="model">account.analytic.contract.template</field>
+    <record id="contract_website_template_view_form" model="ir.ui.view">
+        <field name="name">contract.website.template.form</field>
+        <field name="model">contract.website.template</field>
         <field name="arch" type="xml">
             <form string="Website Template">
                 <sheet>
@@ -22,9 +22,9 @@
         </field>
     </record>
 
-    <record id="account_analytic_contract_template_view_tree" model="ir.ui.view">
-        <field name="name">account.analytic.contract.template.tree</field>
-        <field name="model">account.analytic.contract.template</field>
+    <record id="contract_website_template_view_form_tree" model="ir.ui.view">
+        <field name="name">contract.website.template.tree</field>
+        <field name="model">contract.website.template</field>
         <field name="arch" type="xml">
             <tree string="Website Templates">
                 <field name="name" />
@@ -32,9 +32,9 @@
         </field>
     </record>
 
-    <record id="account_analytic_contract_template_view_search" model="ir.ui.view">
-        <field name="name">account.analytic.contract.template.search</field>
-        <field name="model">account.analytic.contract.template</field>
+    <record id="contract_website_template_view_form_search" model="ir.ui.view">
+        <field name="name">contract.website.template.search</field>
+        <field name="model">contract.website.template</field>
         <field name="arch" type="xml">
             <search string="Website Templates">
                 <field name="name" />
@@ -42,9 +42,9 @@
         </field>
     </record>
 
-    <record id="account_analytic_contract_template_action" model="ir.actions.act_window">
+    <record id="contract_website_template_action" model="ir.actions.act_window">
         <field name="name">Website Templates</field>
-        <field name="res_model">account.analytic.contract.template</field>
+        <field name="res_model">contract.website.template</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
@@ -54,9 +54,9 @@
         </field>
     </record>
 
-    <menuitem id="account_analytic_contract_template_menu"
+    <menuitem id="contract_website_template_menu"
               parent="contract.menu_config_contract"
-              action="account_analytic_contract_template_action"
+              action="contract_website_template_action"
               sequence="1"
               name="Website Templates"
               />
