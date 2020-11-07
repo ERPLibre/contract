@@ -13,10 +13,11 @@ class ContractContract(models.Model):
         comodel_name="contract.website.template",
         help="Website layout for contract",
     )
-    account_invoice_ids = fields.Many2many(
-        string="Invoices",
-        comodel_name="account.invoice",
-    )
+    
+    def _compute_access_url(self):
+        super(ContractContract, self)._compute_access_url()
+        for contract in self:
+            contract.access_url = '/my/contracts/%s' % contract.id
 
     @api.model
     def _search_contracts(self, domain=None):
@@ -27,3 +28,8 @@ class ContractContract(models.Model):
                 ("partner_id", "child_of", [partner.commercial_partner_id.id]),
             ]
         return contract_mod.search(domain)
+
+    @api.multi
+    def _get_report_base_filename(self):
+        self.ensure_one()
+        return 'Contract Report - %s' % self.name

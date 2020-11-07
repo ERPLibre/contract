@@ -52,19 +52,16 @@
                 <thead>
                     <tr class="active">
                         <th>Contract #</th>
-                        <th>status</th>
+                        <th>Status</th>
                         <th class="text-right">Date of Next Invoice</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr t-foreach="contracts" t-as="contract">
                         <td>
-                            <a t-attf-href="/my/contracts/#{contract.id}?#{keep_query()}">
-                                <span t-field="contract.name"/>
-                            </a>
-                            <!-- <a t-att-href="contract.get_portal_url()" t-att-title="contract.name">
+                            <a t-att-href="contract.get_portal_url()" t-att-title="contract.name">
                                 <t t-esc="contract.name"/>
-                            </a> -->
+                            </a>
                         </td>
                         <td>
                             <t t-if="contract.active">
@@ -107,7 +104,6 @@
                     <t t-set="entries">
                         <ul class="list-group list-group-flush flex-wrap flex-row flex-lg-column">
                             <li class="list-group-item flex-grow-1">
-                                <!-- TODO accept & sign, add modal etc. -->
 
                                 <!-- Print / Download Buttons -->
                                 <div class="o_download_pdf btn-toolbar flex-sm-nowrap">
@@ -115,14 +111,21 @@
                                         <a class="btn btn-secondary btn-block o_download_btn" t-att-href="contract.get_portal_url(report_type='pdf', download=True)" title="Download"><i class="fa fa-download"/> Download</a>
                                     </div>
                                     <div class="btn-group flex-grow-1 mb-1">
-                                        <a class="btn btn-secondary btn-block o_print_btn o_portal_invoice_print" t-att-href="contract.get_portal_url(report_type='pdf')" id="print_invoice_report" title="Print" target="_blank"><i class="fa fa-print"/> Print</a>
+                                        <a class="btn btn-secondary btn-block o_print_btn o_portal_contract_print" t-att-href="contract.get_portal_url(report_type='pdf')" id="print_invoice_report" title="Print" target="_blank"><i class="fa fa-print"/> Print</a>
                                     </div>
                                 </div>
                             </li>
 
                             <!-- Navigation Menu -->
-                            <li class="navspy list-group-item pl-0 flex-grow-1" t-ignore="true" role="complementary">
-                                <ul class="nav flex-column bs-sidenav"></ul>
+                            <li class="navspy list-group-item flex-grow-1" t-ignore="true" role="complementary">
+                                <ul class="nav flex-column text-center bs-sidenav">
+                                    <li>
+                                        <a href="#invoices">Invoices</a>
+                                    </li>
+                                    <li>
+                                        <a href="#contract_communication">Communications</a>
+                                    </li>
+                                </ul>
                             </li>
 
                             <!-- Add Info -->
@@ -150,15 +153,33 @@
                     <!-- TODO: modal relative to the actions sign and pay -->
                     <!-- TODO: modal relative to the action reject -->
                     <!-- TODO: status messages -->
-                    
-                    <!-- main content -->
-                    <div t-attf-class="card #{'pb-5' if report_type == 'html' else ''}">
+
+
+
+                    <!-- IFRAME for report preview -->
+                    <div class="o_portal_page_size" style="max-width: 100%; height: 100vh;">
+                        <t t-if="error or warning" t-call="website_portal_contract.portal_contract_error"/>
+                        <t t-if="success and (not error and not warning)" t-call="website_portal_contract.portal_contract_success"/>
+
+                        <div class="o_portal_html_view shadow" style="max-width: 100%; height: 95vh;">
+                            <div class="o_portal_html_loader text-center">
+                                <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw text-black-50"></i>
+                            </div>
+                            <iframe id="contract_html" class="mt8 mb8" width="100%" height="100%" frameborder="0" scrolling="no" t-att-src="contract.get_portal_url(report_type='html')"/>
+                        </div>
+                    </div>
+
+                    <!-- Contract Details -->
+                    <div t-attf-class="card p-4">
                         <div t-call="website_portal_contract.contract_content" />
                     </div>
+
+                    <!-- Invoices -->
+                    <t t-call="website_portal_contract.contract_invoices" />
                     
                     <!-- TODO: bottom actions -->
 
-                    <!-- chatter -->
+                    <!-- Chatter -->
                     <div id="contract_communication" class="mt-4">
                         <h2>Communication</h2>
                         <t t-call="portal.message_thread">
@@ -171,30 +192,38 @@
         </xpath>
     </template>
 
+    <template id="portal_contract_error" name="Contract error/warning display">
+        <div class="row mr16">
+            <div t-attf-class="'col-lg-12 mr16 ml16 alert alert-dismissable' #{'alert-danger' if error else 'alert-warning'}" role="alert">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+                <t t-if="error == 'generic'" name="generic">
+                    There was an error processing this page.
+                </t>
+            </div>
+        </div>
+    </template>
+
+    <template id="portal_contract_success" name="Contract success display">
+        <div class="row mr16">
+            <div class="col-lg-12 mr16 ml16 alert alert-dismissable alert-success" role="status">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+            </div>
+        </div>
+    </template>
+
     <!--
         This template should contains all the printable element of the Contract. This is the
         template rendered in PDF with the report engine.
     -->
     <template id="contract_content" name="Contract Content">
         <!-- Intro -->
-        <div id="introduction" t-attf-class="pb-2 pt-3 #{'card-header bg-white' if report_type == 'html' else ''}">
-            <h2 class="my-0">
-                <span t-field="contract.code"></span>
-                <em t-esc="contract.name"/>
-            </h2>
+        <div id="introduction">
+            <h2>Contract Details</h2>
         </div>
 
-        <div t-attf-class="#{'card-body' if report_type == 'html' else ''}">
+        <div>
             <!-- Informations -->
             <div id="informations">
-                <div class="mb-3">
-                    <strong>Customer:</strong> 
-                    <span t-field="contract.partner_id" t-options='{
-                        "widget": "contact",
-                        "fields": ["address", "name", "phone"]
-                        }'/>
-                </div>
-
                 <div class="mb-3">
                     <strong>Date of Next Invoice:</strong> <span t-field="contract.recurring_next_date" t-options='{"widget": "date"}'/>
                 </div>
@@ -205,124 +234,57 @@
                     <strong>Payment terms:</strong> <span t-if="contract.payment_term_id" t-esc="contract.payment_term_id.name"/>
                 </div>
 
-                <t t-set="lines" t-value="[i for i in contract.contract_line_ids if i.state not in ['canceled']]"/>
-                <div t-if="lines" class="row">
-                    <div class="col">
-                        <strong class="d-block mb-1">Contract Lines</strong>
-                        <ul class="list-group mb-4">
-                            <t t-foreach="lines" t-as="i">
-                                <t t-set="report_url" t-value="i.get_portal_url(report_type='pdf', download=True)"/>
-                                <a class="list-group-item list-group-item-action d-flex flex-wrap align-items-center justify-content-between py-2 px-3" t-att-href="report_url">
-                                    <div>
-                                        <i class="fa fa-download mr-1" role="img" aria-label="Download" title="Download"/>
-                                        <span t-esc="i.state" class="mr-lg-3"/>
-                                        <!-- <div class="small d-lg-inline-block">Date: <span class="text-muted" t-field="i.date_invoice"/></div> -->
-                                    </div>
-                                </a>
-                            </t>
-                        </ul>
-                    </div>
-                </div>
-
             </div>
         </div>
-
-        <!-- Recurring Items -->
-        <!-- <t t-call="website_portal_contract.contract_recurring_items" /> -->
-        <!-- Balance -->
-        <!-- <t t-call="website_portal_contract.contract_invoices" /> -->
         <!-- Descriptions -->
         <!-- <div t-field="contract.website_template_id.website_description" class="oe_no_empty" /> -->
         <!-- <div class="oe_structure" /> -->
     </template>
 
-
-   
-
-    <template id="contract_lines" name="Contract ">
-        <section id="recurring_items">
-            <t t-if="contract.recurring_invoice_line_ids">
-                <h1 class="page-header">Recurring Invoice Items</h1>
-                <table class="table wq-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Quantity</th>
-                            <th>UoM</th>
-                            <th>Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <t t-foreach="contract.recurring_invoice_line_ids" t-as="invoice_line">
-                            <tr>
-                                <td>
-                                    <span t-field="invoice_line.display_name" />
-                                </td>
-                                <td>
-                                    <span t-field="invoice_line.quantity" />
-                                </td>
-                                <td>
-                                    <span t-field="invoice_line.uom_id" />
-                                </td>
-                                <td>
-                                    <span t-field="invoice_line.price_subtotal" />
-                                </td>
-                            </tr>
-                        </t>
-                    </tbody>
-                </table>
-            </t>
-        </section>
-    </template>
-
     <template id="contract_invoices" name="Contract Invoices">
-        <section id="invoices">
-            <t t-if="contract.account_invoice_ids">
-                <h1 class="page-header">Invoices</h1>
-                <table class="table wq-table">
-                    <thead>
-                        <tr>
-                            <th>Invoice #</th>
-                            <th>Invoice Date</th>
-                            <th>Due Date</th>
-                            <th></th>
-                            <th></th>
-                            <th>Amount Due</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <t t-foreach="contract.account_invoice_ids" t-as="invoice">
-                            <tr>
-                                <td class="cell_overflow">
-                                    <span t-field="invoice.number" />
-                                </td>
-                                <td><span t-field="invoice.date_invoice"/></td>
-                                <td><span t-field="invoice.date_due"/></td>
-                                <td>
-                                    <t t-if="invoice.state == 'open'">
-                                        <span class="label label-info"><i class="fa fa-fw fa-clock-o"/> Waiting for Payment</span>
-                                    </t>
-                                    <t t-if="invoice.state == 'paid'">
-                                        <span class="label label-default"><i class="fa fa-fw fa-check"/> Paid</span>
-                                    </t>
-                                    <t t-if="invoice.state == 'cancel'">
-                                        <span class="label label-default"><i class="fa fa-fw fa-remove"/> Cancelled</span>
-                                    </t>
-                                </td>
-                                <td>
-                                <a t-if="invoice.state == 'open'"
-                                    t-attf-href="/website_payment/pay?reference=#{invoice.number}&amp;amount=#{invoice.residual}&amp;currency_id=#{invoice.currency_id.id}&amp;country_id=#{invoice.partner_id.country_id.id}"
-                                    alt="Pay Now" class="btn btn-xs btn-primary">
-                                        <i class="fa fa-arrow-circle-right" />
-                                        Pay Now
-                                </a>
-                                </td>
-                                <td><span t-field="invoice.residual" t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/></td>
-                            </tr>
-                        </t>
-                    </tbody>
-                </table>
+        <section id="invoices" class="mt-4">
+            <h2>Invoices</h2>
+            <t t-if="not invoices">
+                <p>There are currently no invoices and payments for your account.</p>
             </t>
+            <t t-if="invoices" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Invoice #</th>
+                        <th>Invoice Date</th>
+                        <th class='d-none d-md-table-cell'>Due Date</th>
+                        <th/>
+                        <th class="text-right">Amount Due</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="invoices" t-as="invoice">
+                        <tr>
+                            <td>
+                                <a t-att-href="invoice.get_portal_url()" t-att-title="invoice.number">
+                                    <t t-esc="invoice.number" t-if="invoice.number"/>
+                                    <em t-else="">Draft Invoice</em>#contract_communication
+                                </a>
+                            </td>
+                            <td><span t-field="invoice.date_invoice"/></td>
+                            <td class='d-none d-md-table-cell'><span t-field="invoice.date_due"/></td>
+                            <td class="tx_status">
+                                <t t-if="invoice.state == 'open'">
+                                    <span class="badge badge-pill badge-info"><i class="fa fa-fw fa-clock-o" aria-label="Opened" title="Opened" role="img"></i><span class="d-none d-md-inline"> Waiting for Payment</span></span>
+                                </t>
+                                <t t-if="invoice.state == 'paid'">
+                                    <span class="badge badge-pill badge-success"><i class="fa fa-fw fa-check" aria-label="Paid" title="Paid" role="img"></i><span class="d-none d-md-inline"> Paid</span></span>
+                                </t>
+                                <t t-if="invoice.state == 'cancel'">
+                                    <span class="badge badge-pill badge-warning"><i class="fa fa-fw fa-remove" aria-label="Cancelled" title="Cancelled" role="img"></i><span class="d-none d-md-inline"> Cancelled</span></span>
+                                </t>
+                            </td>
+                            <td class="text-right"><span t-esc="-invoice.residual if invoice.type == 'out_refund' else invoice.residual" t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/></td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+
         </section>
     </template>
 
