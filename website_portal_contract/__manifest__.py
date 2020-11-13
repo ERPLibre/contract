@@ -22,7 +22,7 @@
         "views/contract_template.xml",
         "views/contract_website_template.xml",
         "views/contract_portal_templates.xml",
-        "views/assets.xml"
+        "views/assets.xml",
     ],
     "demo": [
         # Load order must be `contract => account => invoice line`

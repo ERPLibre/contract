@@ -9,7 +9,6 @@
         <field name="website_description" type="xml">
             <section data-snippet-id="text-block">
                 <section>
-                    <h1 class="page-header">Contract</h1>
                     <p class="bg-danger">Disclaimer: This demo contract is not to be used for real business purposes.</p>
                     <p>
                         This Agreement is made to the start date of Date, between Client, having its principal place of Client Address
