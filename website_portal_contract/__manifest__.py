@@ -11,10 +11,7 @@
     "license": "AGPL-3",
     "application": False,
     "installable": True,
-    # 10.0 depends on "contract", "contract_show_invoice", "website_quote"
-    "depends": [
-        "contract",
-    ],
+    "depends": ["contract"],
     "data": [
         "security/ir.model.access.csv",
         "data/website_contract_template_data.xml",
@@ -24,11 +21,5 @@
         "views/contract_portal_templates.xml",
         "views/assets.xml",
     ],
-    "demo": [
-        # Load order must be `contract => account => invoice line`
-        "demo/contract_template_demo.xml",
-        "demo/contract_demo.xml",
-        "demo/account_invoice_line_demo.xml",
-        "demo/assets_demo.xml",
-    ],
+    "demo": ["demo/contract_demo.xml", "demo/assets_demo.xml"],
 }

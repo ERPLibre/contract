@@ -11,13 +11,11 @@ class ContractWebsiteTemplate(models.Model):
 
     name = fields.Char(help="Template name")
     website_description = fields.Html(
-        string="Description", 
-        translate=html_translate, 
-        sanitize_attributes=False,
+        string="Description", translate=html_translate, sanitize_attributes=False
     )
     contract_id = fields.Many2one(
         string="Contract",
-        comodel_name='contract.contract',
+        comodel_name="contract.contract",
         inverse_name="website_template_id",
     )
     contract_template_id = fields.One2many(
@@ -32,5 +30,5 @@ class ContractWebsiteTemplate(models.Model):
         return {
             "type": "ir.actions.act_url",
             "target": "self",
-            "url": f"/contract/template/{self.id}",
+            "url": "/contract/template/%d" % self.id,
         }

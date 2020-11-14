@@ -1,18 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright 2017 LasLabs Inc.
-     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<?xml version="1.0"?>
+<odoo noupdate="1">
 
-<odoo>
-
-    <record id="contract_1" model="contract.contract">
+    <!-- Create a Contract for a partner with portal access -->
+    <record id="contract_demo_1" model="contract.contract">
         <field name="name">Demo Contract</field>
-        <field name="contract_template_id" ref="contract_template_1" />
-        <field name="pricelist_id" ref="product.list0" />
-        <field name="date_start" eval="time.strftime('%Y-%m-10')" />
-        <field name="recurring_next_date" eval="time.strftime('%Y-%m-20')" />
-        <field name="partner_id" ref="portal.demo_user0_res_partner" />
-        <field name="recurring_invoices" eval="True" />
+        <field name="partner_id" ref="base.partner_demo_portal"/>
         <field name="website_template_id" ref="website_contract_template_default" />
+        <field name="company_id" ref="base.main_company"/>
     </record>
+
+    <!-- Add contract lines -->
+    <record id="contract_line_demo_1" model="contract.line">
+        <field name="name">Demo Contract Line 1</field>
+        <field name="contract_id" ref="contract_demo_1"/>
+        <field name="date_start" eval="time.strftime('%Y-01-01')"/>
+        <field name="date_end" eval="time.strftime('%Y-12-31')"/>
+        <field name="quantity" eval="1.0"/>
+        <field name="price_unit" eval="1.0"/>
+        <field name="is_auto_renew" eval="True"/>
+        <field name="recurring_interval" eval="1"/>
+        <field name="recurring_rule_type">monthly</field>
+        <field name="recurring_invoicing_type">pre-paid</field>
+    </record>
+
+    <!-- Add partner to the list of subscribers to this contract -->
+    <function model="contract.contract" name="message_subscribe"
+        eval="[ref('contract_demo_1')], [ref('base.partner_demo_portal')]"/>
 
 </odoo>
