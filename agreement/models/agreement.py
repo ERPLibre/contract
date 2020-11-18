@@ -65,6 +65,7 @@ class Agreement(models.Model):
         'This agreement code already exists for this partner!'
         )]
 
+    @api.multi
     @api.returns('self', lambda value: value.id)
     def copy(self, default=None):
         """Always assign a value for code because is required"""
