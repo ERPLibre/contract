@@ -17,6 +17,6 @@ class ContractTemplate(models.Model):
     @api.model
     def _get_default_template(self):
         return self.env.ref(
-            "website_portal_contract.website_contract_template_default",
+            "contract_portal.website_contract_template_default",
             raise_if_not_found=False,
         )

@@ -1,6 +1,6 @@
 /* Copyright 2017 Laslabs Inc.
  * License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). */
-odoo.define('website_portal_contract.tour_test_contract_portal', function (require) {
+odoo.define('contract_portal.tour_test_contract_portal', function (require) {
     'use strict';
 
     var base = require('web_editor.base');

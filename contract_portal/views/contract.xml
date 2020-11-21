@@ -12,6 +12,9 @@
             <field name="partner_id" position="after">
                 <field name="website_template_id"/>
             </field>
+            <xpath expr="//header" position="inside">
+                <button name="preview_contract" type="object" string="Preview"/>
+            </xpath>
         </field>
     </record>
 

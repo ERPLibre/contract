@@ -97,7 +97,7 @@ class CustomerPortal(CustomerPortal):
                 "sortby": sortby,
             }
         )
-        return request.render("website_portal_contract.portal_my_contracts", values)
+        return request.render("contract_portal.portal_my_contracts", values)
 
     @http.route(
         ["/my/contracts/<int:contract_id>"], type="http", auth="user", website=True
@@ -130,7 +130,7 @@ class CustomerPortal(CustomerPortal):
         values = self._contract_get_page_view_values(contract_sudo, access_token, **kw)
 
         # Render view
-        return request.render("website_portal_contract.portal_contract_page", values)
+        return request.render("contract_portal.portal_contract_page", values)
 
     def _get_contract_report_name(self):
         return "contract." "report_contract"
@@ -160,25 +160,3 @@ class CustomerPortal(CustomerPortal):
             ("Content-Length", len(pdf)),
         ]
         return request.make_response(pdf, headers=pdfhttpheaders)
-
-    @http.route(
-        ["/contract/template/<model('contract.template'):template>"],
-        type="http",
-        auth="user",
-        website=True,
-    )
-    def template_view(self, template, **kwargs):
-        values = {"template": template}
-        return request.render(
-            "website_portal_contract.website_contract_template", values
-        )
-
-    @http.route(
-        ["/sale_quotation_builder/template/<model('sale.order.template'):template>"],
-        type="http",
-        auth="user",
-        website=True,
-    )
-    def sale_quotation_builder_template_view(self, template, **post):
-        values = {"template": template}
-        return request.render("sale_quotation_builder.so_template", values)

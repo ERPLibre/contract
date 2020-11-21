@@ -1,7 +1,7 @@
 # Copyright 2017 LasLabs Inc.
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, fields, models
+from odoo import fields, models
 from odoo.tools.translate import html_translate
 
 
@@ -23,12 +23,3 @@ class ContractWebsiteTemplate(models.Model):
         comodel_name="contract.template",
         inverse_name="website_template_id",
     )
-
-    @api.multi
-    def open_template(self):
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_url",
-            "target": "self",
-            "url": "/contract/template/%d" % self.id,
-        }

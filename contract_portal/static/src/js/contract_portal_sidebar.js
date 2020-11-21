@@ -1,9 +1,9 @@
-odoo.define('website_portal_contract.ContractPortalSidebar.instance', function (require) {
+odoo.define('contract_portal.ContractPortalSidebar.instance', function (require) {
     "use strict";
 
     require('web.dom_ready');
     var ContractPortalSidebar = require(
-        'website_portal_contract.ContractPortalSidebar');
+        'contract_portal.ContractPortalSidebar');
 
     if (!$('.o_portal_contract_sidebar').length) {
         return $.Deferred()
@@ -20,7 +20,7 @@ odoo.define('website_portal_contract.ContractPortalSidebar.instance', function (
 
 // =============================================================================
 
-odoo.define('website_portal_contract.ContractPortalSidebar', function (require) {
+odoo.define('contract_portal.ContractPortalSidebar', function (require) {
     "use strict";
 
     var PortalSidebar = require('portal.PortalSidebar');

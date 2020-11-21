@@ -23,3 +23,13 @@ class ContractContract(models.Model):
     def _get_report_base_filename(self):
         self.ensure_one()
         return "Contract Report - %s" % self.name
+
+    @api.multi
+    def preview_contract(self):
+        """Invoked when 'Preview' button in contract form view is clicked."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_url",
+            "target": "self",
+            "url": self.get_portal_url(),
+        }
