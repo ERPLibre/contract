@@ -102,8 +102,14 @@
 
                     <t t-set="entries">
                         <ul class="list-group list-group-flush flex-wrap flex-row flex-lg-column">
-                            <!-- Print / Download Buttons -->
                             <li class="list-group-item flex-grow-1">
+                                <!-- Accept & Sign Button, which trigger the module -->
+                                <t t-if="contract.has_to_be_signed()">
+                                    <a role="button" class="btn btn-primary btn-block mb8" data-toggle="modal" data-target="#modalaccept" href="#">
+                                        <i class="fa fa-check"/> Accept &amp; Sign
+                                    </a>
+                                </t>
+                                <!-- Print / Download Buttons -->
                                 <div class="o_download_pdf btn-toolbar flex-sm-nowrap">
                                     <div class="btn-group flex-grow-1 mr-1 mb-1">
                                         <a class="btn btn-secondary btn-block o_download_btn" t-att-href="contract.get_portal_url(report_type='pdf', download=True)" title="Download"><i class="fa fa-download"/> Download</a>
@@ -149,6 +155,51 @@
 
                 <!-- Page content -->
                 <div id="contract_page_content" class="col-12 col-lg justify-content-end">
+
+                    <!-- modal relative to the actions sign -->
+                    <div role="dialog" class="modal fade" id="modalaccept">
+                        <div class="modal-dialog" t-if="contract.has_to_be_signed()">
+                            <form id="accept" method="POST" t-att-data-order-id="contract.id" t-att-data-token="contract.access_token" class="js_accept_json modal-content js_website_submit_form">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <header class="modal-header">
+                                    <h4 class="modal-title">Validate Contract</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">&amp;times;</button>
+                                </header>
+                                <main class="modal-body" id="sign-dialog">
+                                    <p>
+                                        <span>By signing, I accept this contract</span>
+                                    </p>
+                                    <t t-call="portal.portal_signature">
+                                        <t t-set="object" t-value="contract"/>
+                                        <t t-set="partner_name" t-value="contract.partner_id.name"/>
+                                        <t t-set="callUrl" t-value="contract.get_portal_url(suffix='/accept')"/>
+                                        <t t-set="accessToken" t-value="contract.access_token"/>
+                                    </t>
+                                </main>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- status messages -->
+                    <div t-if="message == 'sign_ok'" class="alert alert-success alert-dismissable d-print-none" role="status">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">&amp;times;</button>
+                        <strong>Thank You! Your contract has been signed.</strong>
+                    </div>
+
+                    <div t-if="contract.state == 'cancel'" class="alert alert-danger alert-dismissable d-print-none" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">&amp;times;</button>
+                        <strong>This contract has been canceled.</strong> <a role="button" href="#discussion"><i class="fa fa-comment"/> Contact us to get a new contract.</a>
+                    </div>
+
+                    <div t-if="contract.require_signature and contract.state == 'draft'" class="alert alert-warning alert-dismissable d-print-none" role="status">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">&amp;times;</button>
+                        <strong>This is a pending contract. Sign to accept. </strong>
+                    </div>
+
+                    <div t-if="contract.state == 'done'" class="alert alert-success alert-dismissable d-print-none" role="status">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">&amp;times;</button>
+                        <strong>This is a confirmed contract.</strong>
+                    </div>
 
                     <!-- IFRAME for report preview -->
                     <div class="o_portal_page_size" style="max-width: 100%;">
@@ -204,6 +255,7 @@
     </template>
 
     <template id="contract_content" name="Contract Content">
+
         <!-- Intro -->
         <div id="introduction">
             <h2>Contract Details</h2>

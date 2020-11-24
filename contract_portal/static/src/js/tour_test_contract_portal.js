@@ -30,4 +30,7 @@ odoo.define('contract_portal.tour_test_contract_portal', function (require) {
     };
 
     tour.register('test_contract_view', options, steps);
+
+    // This element is detached from DOM
+    return {};
 });

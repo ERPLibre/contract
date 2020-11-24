@@ -11,7 +11,7 @@
     "license": "AGPL-3",
     "application": False,
     "installable": True,
-    "depends": ["contract"],
+    "depends": ["contract", "contract_digitized_signature"],
     "data": [
         "security/ir.model.access.csv",
         "data/website_contract_template_data.xml",

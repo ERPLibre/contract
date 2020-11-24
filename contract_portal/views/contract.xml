@@ -11,9 +11,13 @@
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
                 <field name="website_template_id"/>
+                <field name="require_signature"/>
             </field>
             <xpath expr="//header" position="inside">
                 <button name="preview_contract" type="object" string="Preview"/>
+
+                <button name="action_cancel" states="done" type="object" string="Cancel Contract"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,done,canceled"/>
             </xpath>
         </field>
     </record>
