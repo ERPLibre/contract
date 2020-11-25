@@ -2,17 +2,15 @@
 <odoo>
 
     <template id="report_contract_document" inherit_id="contract.report_contract_document">
-        <xpath expr="//div[@id='invoice_info']" position="after">
-            <div class="row">
+        <xpath expr="//div[@class='page']" position="inside">
                 <div id="signature">
-                    <p>
-                        <strong>Customer acceptance:</strong>
-                        <span t-if="o.customer_signature">
-                            <img class="image" t-att-src="'data:image/png;base64,%s' % to_text(o.customer_signature)" style="border:auto;"/>
-                        </span>
-                    </p>
+                    <div class="row mt-4">
+                        <div><strong>Customer acceptance: </strong></div>
+                    </div>
+                    <div class="row">
+                        <img class="image" t-att-src="'data:image/png;base64,%s' % to_text(o.customer_signature)" style="border:auto;"/>
+                    </div>
                 </div>
-            </div>
         </xpath>
     </template>
 
