@@ -39,6 +39,9 @@
                             string="Cancel Contract Termination"
                             attrs="{'invisible': [('is_terminated','=',False)]}"
                             groups="contract.can_terminate_contract"/>
+                    <button name="action_draft" states="done,cancel" type="object" string="Unlock"/>
+                    <button name="action_cancel" states="done" type="object" string="Cancel"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done,cancel"/>
                 </header>
                 <sheet string="Contract">
                     <div class="oe_button_box" name="button_box">
