@@ -23,11 +23,14 @@ class CustomerPortal(CustomerPortal):
         partner = request.env.user.partner_id
         return [("partner_id", "child_of", [partner.commercial_partner_id.id])]
 
-    def _contract_get_page_view_values(self, contract, access_token, **kwargs):
+    def _contract_get_page_view_values(
+        self, contract, access_token, message=False, **kwargs
+    ):
         values = {
             "contract": contract,
             "invoices": contract._get_related_invoices(),
             "page_name": "contract",
+            "message": message,
         }
 
         return self._get_page_view_values(
@@ -128,7 +131,9 @@ class CustomerPortal(CustomerPortal):
             )
 
         # Prepare value
-        values = self._contract_get_page_view_values(contract_sudo, access_token, **kw)
+        values = self._contract_get_page_view_values(
+            contract_sudo, access_token, message, **kw
+        )
 
         # Render view
         return request.render("contract_portal.portal_contract_page", values)

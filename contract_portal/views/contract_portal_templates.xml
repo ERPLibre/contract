@@ -115,7 +115,7 @@
                                         <a class="btn btn-secondary btn-block o_download_btn" t-att-href="contract.get_portal_url(report_type='pdf', download=True)" title="Download"><i class="fa fa-download"/> Download</a>
                                     </div>
                                     <div class="btn-group flex-grow-1 mb-1">
-                                        <a class="btn btn-secondary btn-block o_print_btn o_portal_contract_print" t-att-href="contract.get_portal_url(report_type='pdf')" id="print_invoice_report" title="Print" target="_blank"><i class="fa fa-print"/> Print</a>
+                                        <a class="btn btn-secondary btn-block o_print_btn o_portal_contract_print" t-att-href="contract.get_portal_url(report_type='pdf')" id="print_contract_report" title="Print" target="_blank"><i class="fa fa-print"/> Print</a>
                                     </div>
                                 </div>
                             </li>
@@ -183,7 +183,7 @@
                     <!-- status messages -->
                     <div t-if="message == 'sign_ok'" class="alert alert-success alert-dismissable d-print-none" role="status">
                         <button type="button" class="close" data-dismiss="alert" aria-label="close">&amp;times;</button>
-                        <strong>Thank You! Your contract has been signed.</strong>
+                        <strong>Thank You!</strong> Your contract has been signed.
                     </div>
 
                     <div t-if="contract.state == 'cancel'" class="alert alert-danger alert-dismissable d-print-none" role="alert">
@@ -196,9 +196,9 @@
                         <strong>This is a pending contract. Sign to accept. </strong>
                     </div>
 
-                    <div t-if="contract.state == 'done'" class="alert alert-success alert-dismissable d-print-none" role="status">
+                    <div t-if="contract.state == 'done'" class="alert alert-info alert-dismissable d-print-none" role="status">
                         <button type="button" class="close" data-dismiss="alert" aria-label="close">&amp;times;</button>
-                        <strong>This is a confirmed contract.</strong>
+                        <strong>This is a confirmed contract.</strong> <a role="button" href="#discussion"><i class="fa fa-comment"/> Contact us to have any questions.</a>
                     </div>
 
                     <!-- IFRAME for report preview -->
