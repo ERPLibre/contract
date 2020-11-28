@@ -18,9 +18,7 @@ class ContractContract(models.Model):
     signature_name = fields.Char(
         string="Signed by", readonly=True, states={"draft": [("readonly", False)]}
     )
-    signature_time = fields.Datetime(
-        string="Signed at", readonly=True, states={"draft": [("readonly", False)]}
-    )
+    signature_time = fields.Datetime(string="Signed at", readonly=True)
 
     def _get_default_require_signature(self):
         return self.env.user.company_id.portal_confirmation_sign
