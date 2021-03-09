@@ -52,11 +52,14 @@ class ContractContract(models.Model):
         if contract.customer_signature:
             values = {"customer_signature": contract.customer_signature}
             contract._track_signature(values, "customer_signature")
+            contract.action_done()
         return contract
 
     @api.multi
     def write(self, values):
         self._track_signature(values, "customer_signature")
+        if values.get("customer_signature") and self.state == "draft":
+            self.action_done()
         return super(ContractContract, self).write(values)
 
     def _track_signature(self, values, field):
