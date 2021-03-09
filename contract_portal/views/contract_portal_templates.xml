@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2017 LasLabs Inc.
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <template id="portal_my_home_menu_contracts"
+              name="Portal layout : contract menu entries"
+              inherit_id="portal.portal_breadcrumbs"
+              priority="25">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'contract' or contract"
+                t-attf-class="breadcrumb-item #{'active ' if not contract else ''}">
+                <a t-if="contract"
+                   t-attf-href="/my/contracts?{{ keep_query() }}">Contracts</a>
+                <t t-else="">Contracts</t>
+            </li>
+            <li t-if="contract" class="breadcrumb-item active">
+                <t t-esc="contract.name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_contracts"
+              name="Portal My Home : contract entries"
+              inherit_id="portal.portal_my_home"
+              priority="25">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="contract_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">Contracts</t>
+                <t t-set="url" t-value="'/my/contracts'"/>
+                <t t-set="count" t-value="contract_count"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_contracts" name="My Contracts">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Contract</t>
+            </t>
+
+            <t t-if="not contracts">
+                <div class="alert alert-warning mt8" role="alert">
+                    <p>There are currently no contracts for your account.</p>
+                </div>
+            </t>
+
+            <t t-if="contracts" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Contract Name</th>
+                        <th>Status</th>
+                        <th class="text-right">Date of Next Invoice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="contracts" t-as="contract">
+                        <td>
+                            <a t-att-href="contract.get_portal_url()" t-att-title="contract.name">
+                                <t t-esc="contract.name"/>
+                            </a>
+                        </td>
+                        <td>
+                            <t t-if="contract.active">
+                                <span>☒</span>
+                            </t>
+                            <t t-if="not contract.active">
+                                <span>☐</span>
+                            </t>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="contract.recurring_next_date" t-options='{"widget": "date"}'/>
+                        </td>
+                    </tr>
+                </tbody>
+                <div t-if="pager" class="o_portal_pager text-center">
+                    <t t-call="portal.pager" />
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_contract_page" name="Contract"  inherit_id="portal.portal_sidebar" primary="True">
+        <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
+            <t t-set="o_portal_fullwidth_alert" groups="sales_team.group_sale_salesman">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url" t-value="'/web#return_label=Website&amp;model=%s&amp;id=%s&amp;action=%s&amp;view_type=form' % (contract._name, contract.id, action)"/>
+                </t>
+            </t>
+
+            <div class="row mt16 o_portal_contract_sidebar">
+                <!-- Sidebar -->
+                <t t-call="portal.portal_record_sidebar">
+                    <t t-set="classes" t-value="'col-lg-auto d-print-none'"/>
+
+                    <t t-set="title">
+                        <h2 class="mb-0"><b t-field="contract.name" data-id="contract_name"/> </h2>
+                    </t>
+
+                    <t t-set="entries">
+                        <ul class="list-group list-group-flush flex-wrap flex-row flex-lg-column">
+                            <li class="list-group-item flex-grow-1">
+                                <!-- Accept & Sign Button, which trigger the module -->
+                                <t t-if="contract.has_to_be_signed()">
+                                    <a role="button" class="btn btn-primary btn-block mb8" data-toggle="modal" data-target="#modalaccept" href="#">
+                                        <i class="fa fa-check"/> Accept &amp; Sign
+                                    </a>
+                                </t>
+                                <!-- Print / Download Buttons -->
+                                <div class="o_download_pdf btn-toolbar flex-sm-nowrap">
+                                    <div class="btn-group flex-grow-1 mr-1 mb-1">
+                                        <a class="btn btn-secondary btn-block o_download_btn" t-att-href="contract.get_portal_url(report_type='pdf', download=True)" title="Download"><i class="fa fa-download"/> Download</a>
+                                    </div>
+                                    <div class="btn-group flex-grow-1 mb-1">
+                                        <a class="btn btn-secondary btn-block o_print_btn o_portal_contract_print" t-att-href="contract.get_portal_url(report_type='pdf')" id="print_contract_report" title="Print" target="_blank"><i class="fa fa-print"/> Print</a>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- Navigation Menu -->
+                            <li class="navspy list-group-item flex-grow-1" t-ignore="true" role="complementary">
+                                <ul class="nav flex-column text-center bs-sidenav">
+                                    <li>
+                                        <a href="#introduction">Contract Details</a>
+                                    </li>
+                                    <li>
+                                        <a href="#invoices">Invoices</a>
+                                    </li>
+                                    <li>
+                                        <a href="#contract_communication">Communications</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <!-- User discussion / feedback -->
+                            <li t-if="contract.user_id" class="list-group-item flex-grow-1">
+                                <div class="small mb-1"><strong class="text-muted">Your Contract</strong></div>
+                                <div class="row flex-nowrap">
+                                    <div class="col flex-grow-0 pr-2">
+                                        <img class="rounded-circle mr4 float-left o_portal_contact_img" t-if="contract.user_id.image" t-att-src="image_data_uri(contract.user_id.image)" alt="Contact"/>
+                                        <img class="rounded-circle mr4 float-left o_portal_contact_img" t-if="not contract.user_id.image" src="/web/static/src/img/placeholder.png" alt="Contact"/>
+                                    </div>
+                                    <div class="col pl-0" style="min-width: 150px">
+                                        <span t-field="contract.user_id" t-options='{"widget": "contact", "fields": ["name", "phone"], "no_marker": True}'/>
+                                        <a href="#discussion" class="small"><i class="fa fa-comment"></i> Give Feedback</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </t>
+                </t>
+
+                <!-- Page content -->
+                <div id="contract_page_content" class="col-12 col-lg justify-content-end">
+
+                    <!-- modal relative to the actions sign -->
+                    <div role="dialog" class="modal fade" id="modalaccept">
+                        <div class="modal-dialog" t-if="contract.has_to_be_signed()">
+                            <form id="accept" method="POST" t-att-data-order-id="contract.id" t-att-data-token="contract.access_token" class="js_accept_json modal-content js_website_submit_form">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <header class="modal-header">
+                                    <h4 class="modal-title">Validate Contract</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">&amp;times;</button>
+                                </header>
+                                <main class="modal-body" id="sign-dialog">
+                                    <p>
+                                        <span>By signing, I accept this contract</span>
+                                    </p>
+                                    <t t-call="portal.portal_signature">
+                                        <t t-set="object" t-value="contract"/>
+                                        <t t-set="partner_name" t-value="contract.partner_id.name"/>
+                                        <t t-set="callUrl" t-value="contract.get_portal_url(suffix='/accept')"/>
+                                        <t t-set="accessToken" t-value="contract.access_token"/>
+                                    </t>
+                                </main>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- status messages -->
+                    <div t-if="message == 'sign_ok'" class="alert alert-success alert-dismissable d-print-none" role="status">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">&amp;times;</button>
+                        <strong>Thank You!</strong> Your contract has been signed.
+                    </div>
+
+                    <div t-if="contract.state == 'cancel'" class="alert alert-danger alert-dismissable d-print-none" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">&amp;times;</button>
+                        <strong>This contract has been canceled.</strong> <a role="button" href="#discussion"><i class="fa fa-comment"/> Contact us to get a new contract.</a>
+                    </div>
+
+                    <div t-if="contract.require_signature and contract.state == 'draft'" class="alert alert-warning alert-dismissable d-print-none" role="status">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">&amp;times;</button>
+                        <strong>This is a pending contract. Sign to accept. </strong>
+                    </div>
+
+                    <div t-if="contract.state == 'done'" class="alert alert-info alert-dismissable d-print-none" role="status">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">&amp;times;</button>
+                        <strong>This is a confirmed contract.</strong> <a role="button" href="#discussion"><i class="fa fa-comment"/> Contact us to have any questions.</a>
+                    </div>
+
+                    <!-- IFRAME for report preview -->
+                    <div class="o_portal_page_size" style="max-width: 100%;">
+                        <t t-if="error or warning" t-call="contract_portal.portal_contract_error"/>
+                        <t t-if="success and (not error and not warning)" t-call="contract_portal.portal_contract_success"/>
+
+                        <div class="o_portal_html_view shadow">
+                            <div class="o_portal_html_loader text-center">
+                                <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw text-black-50"></i>
+                            </div>
+                            <iframe id="contract_html" class="mt8 mb8" width="100%" height="100%" frameborder="0" scrolling="no" t-att-src="contract.get_portal_url(report_type='html')"/>
+                        </div>
+                    </div>
+
+                    <!-- Contract Details -->
+                    <div t-attf-class="card p-4 mt-4">
+                        <div t-call="contract_portal.contract_content" style="max-height: 450px; overflow: scroll;"/>
+                    </div>
+
+                    <!-- Invoices -->
+                    <t t-call="contract_portal.contract_invoices" />
+
+                    <!-- Chatter -->
+                    <div id="contract_communication" class="mt-4">
+                        <h2>Communication</h2>
+                        <t t-call="portal.message_thread">
+                            <t t-set="object" t-value="contract"/>
+                        </t>
+                    </div>
+                </div>
+
+            </div>
+        </xpath>
+    </template>
+
+    <template id="portal_contract_error" name="Contract error/warning display">
+        <div class="row mr16">
+            <div t-attf-class="'col-lg-12 mr16 ml16 alert alert-dismissable' #{'alert-danger' if error else 'alert-warning'}" role="alert">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+                <t t-if="error == 'generic'" name="generic">
+                    There was an error processing this page.
+                </t>
+            </div>
+        </div>
+    </template>
+
+    <template id="portal_contract_success" name="Contract success display">
+        <div class="row mr16">
+            <div class="col-lg-12 mr16 ml16 alert alert-dismissable alert-success" role="status">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+            </div>
+        </div>
+    </template>
+
+    <template id="contract_content" name="Contract Content">
+
+        <!-- Intro -->
+        <div id="introduction">
+            <h2>Contract Details</h2>
+        </div>
+
+        <!-- Informations -->
+        <div>
+            <div id="informations">
+                <div class="mb-3">
+                    <strong>Date of Next Invoice:</strong> <span t-field="contract.recurring_next_date" t-options='{"widget": "date"}'/>
+                </div>
+                <div class="mb-3">
+                    <strong>End Date:</strong> <span t-field="contract.date_end" t-options='{"widget": "date"}'/>
+                </div>
+                <div class="mb-3">
+                    <strong>Payment terms:</strong> <span t-if="contract.payment_term_id" t-esc="contract.payment_term_id.name"/>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Terms & Conditions -->
+        <div t-field="contract.website_template_id.website_description"/>
+    </template>
+
+    <template id="contract_invoices" name="Contract Invoices">
+        <section id="invoices" class="mt-4">
+            <h2>Invoices</h2>
+            <t t-if="not invoices">
+                <p>There are currently no invoices and payments for your account.</p>
+            </t>
+            <t t-if="invoices" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Invoice #</th>
+                        <th>Invoice Date</th>
+                        <th class='d-none d-md-table-cell'>Due Date</th>
+                        <th/>
+                        <th class="text-right">Amount Due</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="invoices" t-as="invoice">
+                        <tr>
+                            <td>
+                                <a t-att-href="invoice.get_portal_url()" t-att-title="invoice.number">
+                                    <t t-esc="invoice.number" t-if="invoice.number"/>
+                                    <em t-else="">Draft Invoice</em>#contract_communication
+                                </a>
+                            </td>
+                            <td><span t-field="invoice.date_invoice"/></td>
+                            <td class='d-none d-md-table-cell'><span t-field="invoice.date_due"/></td>
+                            <td class="tx_status">
+                                <t t-if="invoice.state == 'open'">
+                                    <span class="badge badge-pill badge-info"><i class="fa fa-fw fa-clock-o" aria-label="Opened" title="Opened" role="img"></i><span class="d-none d-md-inline"> Waiting for Payment</span></span>
+                                </t>
+                                <t t-if="invoice.state == 'paid'">
+                                    <span class="badge badge-pill badge-success"><i class="fa fa-fw fa-check" aria-label="Paid" title="Paid" role="img"></i><span class="d-none d-md-inline"> Paid</span></span>
+                                </t>
+                                <t t-if="invoice.state == 'cancel'">
+                                    <span class="badge badge-pill badge-warning"><i class="fa fa-fw fa-remove" aria-label="Cancelled" title="Cancelled" role="img"></i><span class="d-none d-md-inline"> Cancelled</span></span>
+                                </t>
+                            </td>
+                            <td class="text-right"><span t-esc="-invoice.residual if invoice.type == 'out_refund' else invoice.residual" t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/></td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+
+        </section>
+    </template>
+
+</odoo>

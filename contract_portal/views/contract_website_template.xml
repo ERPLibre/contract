@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2017 LasLabs Inc.
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record id="contract_website_template_view_form" model="ir.ui.view">
+        <field name="name">contract website template form</field>
+        <field name="model">contract.website.template</field>
+        <field name="arch" type="xml">
+            <form string="Website Template">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" />
+                        <h1>
+                            <field name="name" placeholder="Contract Website Template" />
+                        </h1>
+                    </div>
+                    <group string="Website Description">
+                            <field name="website_description" widget="html"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="contract_website_template_view_form_tree" model="ir.ui.view">
+        <field name="name">contract.website.template.tree</field>
+        <field name="model">contract.website.template</field>
+        <field name="arch" type="xml">
+            <tree string="Website Templates">
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="contract_website_template_view_form_search" model="ir.ui.view">
+        <field name="name">contract.website.template.search</field>
+        <field name="model">contract.website.template</field>
+        <field name="arch" type="xml">
+            <search string="Website Templates">
+                <field name="name" />
+            </search>
+        </field>
+    </record>
+
+    <record id="contract_website_template_action" model="ir.actions.act_window">
+        <field name="name">Website Templates</field>
+        <field name="res_model">contract.website.template</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a new contract template.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="contract_website_template_menu"
+              parent="contract.menu_config_contract"
+              action="contract_website_template_action"
+              sequence="1"
+              name="Website Templates"
+              />
+
+</odoo>

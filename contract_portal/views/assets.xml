@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="assets_frontend_contract" name="contract portal assets" inherit_id="web.assets_frontend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/contract_portal/static/src/js/contract_portal_sidebar.js"></script>
+        </xpath>
+    </template>
+
+</odoo>

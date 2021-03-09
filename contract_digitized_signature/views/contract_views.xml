@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="contract.contract_contract_form_view"/>
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
-                <field name="user_id"/>
-                <field name="signature_name"/>
+                <field name="signature_name" attrs="{'readonly': ['|', ('is_terminated','=',True), ('state','not in',['draft'])]}"/>
+                <field name="require_signature" attrs="{'readonly': ['|', ('is_terminated','=',True), ('state','not in',['draft'])]}"/>
             </field>
             <xpath expr="//group[@name='group_legend']" position="after">
                 <div class="oe_clear"/>
